@@ -18,13 +18,13 @@ export class Hero extends Entity {
   name: string;
 
   @belongsTo(() => Hero, {keyTo: 'id'})
-  friend?: string;
+  friendId?: string;
 
   @belongsTo(() => Planet, {keyTo: 'id'})
-  planet?: string;
+  planetId?: string;
 
   @belongsTo(() => Species, {keyTo: 'id'})
-  species?: string;
+  speciesId?: string;
 
   // Define well-known properties here
 

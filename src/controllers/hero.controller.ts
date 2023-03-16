@@ -7,23 +7,23 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {Hero} from '../models';
+import {Hero, Planet, Species} from '../models';
 import {HeroRepository} from '../repositories';
 
 export class HeroController {
   constructor(
     @repository(HeroRepository)
-    public heroRepository : HeroRepository,
+    public heroRepository: HeroRepository,
   ) {}
 
   @post('/heroes')
@@ -52,9 +52,7 @@ export class HeroController {
     description: 'Hero model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Hero) where?: Where<Hero>,
-  ): Promise<Count> {
+  async count(@param.where(Hero) where?: Where<Hero>): Promise<Count> {
     return this.heroRepository.count(where);
   }
 
@@ -70,9 +68,7 @@ export class HeroController {
       },
     },
   })
-  async find(
-    @param.filter(Hero) filter?: Filter<Hero>,
-  ): Promise<Hero[]> {
+  async find(@param.filter(Hero) filter?: Filter<Hero>): Promise<Hero[]> {
     return this.heroRepository.find(filter);
   }
 
@@ -106,7 +102,7 @@ export class HeroController {
   })
   async findById(
     @param.path.number('id') id: number,
-    @param.filter(Hero, {exclude: 'where'}) filter?: FilterExcludingWhere<Hero>
+    @param.filter(Hero, {exclude: 'where'}) filter?: FilterExcludingWhere<Hero>,
   ): Promise<Hero> {
     return this.heroRepository.findById(id, filter);
   }
@@ -146,5 +142,46 @@ export class HeroController {
   })
   async deleteById(@param.path.number('id') id: number): Promise<void> {
     await this.heroRepository.deleteById(id);
+  }
+  @get('/heroes/{id}/friend', {
+    responses: {
+      '200': {
+        description: 'Character model instance',
+        content: {'application/json': {schema: {'x-ts-type': Hero}}},
+      },
+    },
+  })
+  async getFriend(
+    @param.path.number('id') heroId: typeof Hero.prototype.id,
+  ): Promise<Hero> {
+    return await this.heroRepository.friend(heroId);
+  }
+
+  @get('/heroes/{id}/planet', {
+    responses: {
+      '200': {
+        description: 'Character model instance',
+        content: {'application/json': {schema: {'x-ts-type': Planet}}},
+      },
+    },
+  })
+  async getPlanet(
+    @param.path.number('id') heroId: typeof Hero.prototype.id,
+  ): Promise<Planet> {
+    return await this.heroRepository.planet(heroId);
+  }
+
+  @get('/heroes/{id}/species', {
+    responses: {
+      '200': {
+        description: 'Character model instance',
+        content: {'application/json': {schema: {'x-ts-type': Species}}},
+      },
+    },
+  })
+  async getSpecies(
+    @param.path.number('id') heroId: typeof Hero.prototype.id,
+  ): Promise<Species> {
+    return await this.heroRepository.species(heroId);
   }
 }
